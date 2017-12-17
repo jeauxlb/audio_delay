@@ -18,6 +18,8 @@ unsigned int writeBuf;
 boolean evenCycle = true;
 volatile byte buffering = 1;
 
+volatile unsigned int signal;
+
 void setup() {
 #ifdef DEBUG
 	// connect to the serial port
@@ -25,7 +27,7 @@ void setup() {
 #endif
 
 	sampleRate = 30000;
-	delaySeconds = 5;
+	delaySeconds = 5.15;
 	memorySize = (delaySeconds > (float)MAX_ADDR/20000) ? MAX_ADDR : delaySeconds * (long)20000;
 	timer1Start = UINT16_MAX - (F_CPU / sampleRate);
 
@@ -61,12 +63,10 @@ void loop() {
 		}
 	}
 #endif
-
 }
 
 ISR(TIMER1_OVF_vect) {
 	TCNT1 = timer1Start;
-	unsigned int signal;
 
 	if(!buffering) {
 		AudioHacker.writeDAC(playbackBuf);
